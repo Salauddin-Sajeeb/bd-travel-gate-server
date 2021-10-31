@@ -37,6 +37,13 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         })
+        //delete
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
+            res.json(result)
+        })
 
         //post to database
         app.post('/packages', async (req, res) => {
