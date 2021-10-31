@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const port = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
@@ -17,11 +18,27 @@ async function run() {
         await client.connect();
         const database = client.db('tourism');
         const packageCollection = database.collection('packages');
+        const orderCollection = database.collection('Orders');
         //get product api
         app.get('/packages', async (req, res) => {
             const cursor = packageCollection.find({});
             const products = await cursor.toArray();
             res.send(products);
+        })
+        //add orders
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.json(result)
+        })
+
+        //post to database
+        app.post('/packages', async (req, res) => {
+
+            const package = req.body;
+            console.log('hit the api', package)
+            const result = await packageCollection.insertOne(package);
+            res.json(result)
         })
 
 
